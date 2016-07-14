@@ -1,7 +1,7 @@
 package com.google.engedu.ghost;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.Random;
 
 
-public class GhostActivity extends ActionBarActivity {
+public class GhostActivity extends AppCompatActivity {
     private static final String COMPUTER_TURN = "Computer's turn";
     private static final String USER_TURN = "Your turn";
     private GhostDictionary dictionary;
@@ -57,18 +57,48 @@ public class GhostActivity extends ActionBarActivity {
     }
 
     private void computerTurn() {
-        TextView label = (TextView) findViewById(R.id.gameStatus);
+        TextView status = (TextView) findViewById(R.id.gameStatus);
+        TextView text =(TextView)findViewById(R.id.ghostText);
         // Do computer turn stuff then make it the user's turn again
+        String string;
+        if(fragment.length()==0){
+            char a = (char)(random.nextInt(26)+90);
+            fragment = new String();
+            fragment = a + fragment;
+            text.setText(fragment);
+            userTurn = true;
+            status.setText(USER_TURN);
+            return;
+        }
+
+        if(fragment != null && fragment.length() >= 4){
+            if(dictionary.isWord(fragment)){
+                string = fragment + "is a word";
+                text.setText(string);
+                status.setText("Computer Wins");
+                return;
+            }
+        }
+        string = dictionary.getAnyWordStartingWith(fragment);
+        if(string==null){
+            string = "No more word can be formed with" + fragment;
+            text.setText(string);
+            status.setText("Computer Wins");
+            return;
+        }
+        if(fragment != null){
+            char c = (char)(random.nextInt(26)+90);
+            fragment = c + fragment;
+            text.setText(fragment);
+            userTurn = true;
+            status.setText(USER_TURN);
+            return;
+        }
         userTurn = true;
-        label.setText(USER_TURN);
+        status.setText(USER_TURN);
     }
 
-    /**
-     * Handler for the "Reset" button.
-     * Randomly determines whether the game starts with a user turn or a computer turn.
-     * @param view
-     * @return true
-     */
+
     public boolean onStart(View view) {
         userTurn = random.nextBoolean();
         TextView text = (TextView) findViewById(R.id.ghostText);
@@ -87,16 +117,43 @@ public class GhostActivity extends ActionBarActivity {
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         if (event.getUnicodeChar() < 'a' || event.getUnicodeChar() > 'z'){
-            TextView textView = (TextView)findViewById(R.id.gameStatus);
-            textView.setText("Invalid key.");
+            TextView status = (TextView)findViewById(R.id.gameStatus);
+            status.setText("Invalid key.");
             return super.onKeyUp(keyCode, event);
         }else{
-            TextView text1 = (TextView) findViewById(R.id.gameStatus);
-            text1.setText("Valid key.");
+            TextView status = (TextView) findViewById(R.id.gameStatus);
+            status.setText("Valid key.");
             fragment = (event.getDisplayLabel()+fragment.toLowerCase());
-            TextView textView = (TextView) findViewById(R.id.ghostText);
-            textView.setText(fragment);
+            TextView text = (TextView) findViewById(R.id.ghostText);
+            text.setText(fragment);
             return true;
         }
+    }
+
+    public boolean challenge (){
+        TextView text = (TextView)findViewById(R.id.ghostText);
+        TextView status = (TextView)findViewById(R.id.gameStatus);
+
+        if (fragment.length() >= 4) {
+            if (dictionary.isWord(fragment)){
+                String a = fragment + " is a word!";
+                text.setText(a);
+                status.setText("Player wins");
+                return true;
+            }
+        }
+
+        String s = dictionary.getAnyWordStartingWith(fragment);
+
+        if ( s != null ) {
+            s = "This is a valid word:\n" + s;
+            text.setText(s);
+            status.setText("Computer wins");
+        } else {
+            s = "No word can be formed with " + fragment + "_";
+            text.setText(s);
+            status.setText("Player wins");
+        }
+        return false;
     }
 }
