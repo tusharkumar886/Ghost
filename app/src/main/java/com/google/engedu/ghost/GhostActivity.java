@@ -65,7 +65,7 @@ public class GhostActivity extends ActionBarActivity {
         if(fragment.length() == 0){
             char a = (char) (random.nextInt(26)+97);
             fragment = new String();
-            fragment = a + fragment;
+            fragment =  fragment + a;
             text.setText(fragment);
             userTurn = true;
             status.setText(USER_TURN);
@@ -92,7 +92,7 @@ public class GhostActivity extends ActionBarActivity {
 
         if(fragment != null){
             char c = (char)(random.nextInt(26)+97);
-            fragment = c + fragment;
+            fragment = fragment + c;
             text.setText(fragment);
             userTurn = true;
             status.setText(USER_TURN);
@@ -139,6 +139,7 @@ public class GhostActivity extends ActionBarActivity {
                 String a = fragment + " is a word!";
                 text.setText(a);
                 status.setText("Player wins");
+                return true;
             }
         }
 
@@ -162,15 +163,13 @@ public class GhostActivity extends ActionBarActivity {
      */
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
+        TextView status = (TextView)findViewById(R.id.gameStatus);
         if (event.getUnicodeChar() < 'a' || event.getUnicodeChar() > 'z'){
-            TextView status = (TextView)findViewById(R.id.gameStatus);
             status.setText("Invalid key.");
-
             return super.onKeyUp(keyCode, event);
         } else{
-            TextView status = (TextView) findViewById(R.id.gameStatus);
             status.setText("Valid key.");
-            fragment = (event.getDisplayLabel()+fragment.toLowerCase());
+            fragment = (fragment+event.getDisplayLabel()).toLowerCase();
             TextView text = (TextView) findViewById(R.id.ghostText);
             text.setText(fragment);
             computerTurn();
