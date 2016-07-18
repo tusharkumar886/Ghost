@@ -26,7 +26,6 @@ public class GhostActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ghost);
         onStart(null);
 
-
         try {
             dictionary = new SimpleDictionary(getApplicationContext().getAssets().open("words.txt"));
         } catch (IOException e) {
@@ -63,7 +62,7 @@ public class GhostActivity extends AppCompatActivity {
         String string;
         if(fragment.length()==0){
             char a = (char)(random.nextInt(26)+90);
-            fragment = new String();
+            fragment = "";
             fragment = a + fragment;
             text.setText(fragment);
             userTurn = true;
@@ -99,7 +98,7 @@ public class GhostActivity extends AppCompatActivity {
     }
 
 
-    public boolean onStart(View view) {
+    public void onStart(View view) {
         userTurn = random.nextBoolean();
         TextView text = (TextView) findViewById(R.id.ghostText);
         text.setText("");
@@ -111,7 +110,6 @@ public class GhostActivity extends AppCompatActivity {
             label.setText(COMPUTER_TURN);
             computerTurn();
         }
-        return true;
     }
 
     @Override
@@ -130,7 +128,8 @@ public class GhostActivity extends AppCompatActivity {
         }
     }
 
-    public boolean challenge (){
+
+    public void challenge(View view) {
         TextView text = (TextView)findViewById(R.id.ghostText);
         TextView status = (TextView)findViewById(R.id.gameStatus);
 
@@ -139,7 +138,6 @@ public class GhostActivity extends AppCompatActivity {
                 String a = fragment + " is a word!";
                 text.setText(a);
                 status.setText("Player wins");
-                return true;
             }
         }
 
@@ -154,6 +152,5 @@ public class GhostActivity extends AppCompatActivity {
             text.setText(s);
             status.setText("Player wins");
         }
-        return false;
     }
 }

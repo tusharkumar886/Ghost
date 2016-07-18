@@ -16,7 +16,7 @@ public class SimpleDictionary implements GhostDictionary {
         while((line = in.readLine()) != null) {
             String word = line.trim();
             if (word.length() >= MIN_WORD_LENGTH)
-              words.add(line.trim());
+                words.add(line.trim());
         }
     }
 
@@ -27,7 +27,21 @@ public class SimpleDictionary implements GhostDictionary {
 
     @Override
     public String getAnyWordStartingWith(String prefix) {
-        return null;
+        return gawswBinarySearch(0, words.size() - 1, prefix);
+    }
+
+    private String gawswBinarySearch(int left, int right, String prefix){
+        if ( left > right )
+            return null;
+
+        int mid = (left + right) / 2;
+
+        if (words.get(mid).startsWith(prefix) )
+            return words.get(mid);
+        else if (prefix.compareToIgnoreCase(words.get(mid)) < 0 )
+            return gawswBinarySearch(left, mid - 1, prefix);
+        else
+            return gawswBinarySearch(mid + 1, right, prefix);
     }
 
     @Override
